@@ -1,8 +1,16 @@
 package de.swt.custom.widgets.accordion;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class HAccordionItem extends AnimatableItem {
 
     private static final Logger LOG = LoggerFactory.getLogger(HAccordionItem.class);
-
+    
     private SlideText slideText;
     private HAccordionLabel rightLabel;
     private String leftLabelText = "";
@@ -40,8 +48,10 @@ public class HAccordionItem extends AnimatableItem {
     private ScrolledComposite scrolledComposite;
     private HAccordionClientArea clientArea;
     private Color colorBackground;
+    private GifLabel preloader;
     private final HAccordion accordion;
-
+    
+    
     private static final int LEFT_SLIDE_TEXT_PADDING = 5; // px
 
     /**
@@ -66,6 +76,16 @@ public class HAccordionItem extends AnimatableItem {
         scrolledComposite = new ScrolledComposite(this, SWT.H_SCROLL | SWT.V_SCROLL);
         slideText = new SlideText(this, SWT.NONE);
         clientArea = new HAccordionClientArea(scrolledComposite, SWT.NONE);
+        
+        // check whether the user has set the preloader path to null
+        if(accordion.preloaderGifPath != null){
+        	try{
+            	InputStream gifStream = getClass().getClassLoader().getResourceAsStream(accordion.preloaderGifPath);
+            	preloader = new GifLabel(this, SWT.NONE).setGifImage(gifStream);        		
+        	}catch(Exception e){
+        		System.err.println("Failed to load the preloader");
+        	}
+        }
 
         // 2. LAYOUT: layout after initiation of containers
         this.layout = new FormLayout();
@@ -81,6 +101,7 @@ public class HAccordionItem extends AnimatableItem {
         if (iAmTheFirstItem) {
             leftSlideTextPadding = 0;
         }
+        // posituin the left label on the left side of the HAccordionItem: [[]  ]
         formData4SlideText.left = new FormAttachment(0, leftSlideTextPadding);
         formData4SlideText.bottom = new FormAttachment(100, 0);
         slideText.setLayoutData(formData4SlideText);
@@ -92,13 +113,23 @@ public class HAccordionItem extends AnimatableItem {
         formData4Label.bottom = new FormAttachment(100, 0);
         rightLabel.setLayoutData(formData4Label);
 
-        // position the scrolledComposite left of the label, inside of the HAccordionItem: [[ ] ]
+        // position the scrolledComposite left of the Haccordionlabel, and right of the slidetext: [ [ ] ]
         FormData formData4scrolledComposite = new FormData();
         formData4scrolledComposite.left = new FormAttachment(slideText, 0);
         formData4scrolledComposite.top = new FormAttachment(0, 0);
         formData4scrolledComposite.right = new FormAttachment(rightLabel, 0);
         formData4scrolledComposite.bottom = new FormAttachment(100, 0);
         scrolledComposite.setLayoutData(formData4scrolledComposite);
+        
+        // position the preloader in the middle, if a preloader wasnt disabled
+        if(preloader != null){
+	        Point preloaderSize = preloader.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+	        FormData formData4preloader = new FormData();
+	        formData4preloader.top = new FormAttachment(1, 2, -preloaderSize.x/2); // center
+			formData4preloader.left = new FormAttachment(1, 2, -preloaderSize.y/2);
+			preloader.setLayoutData(formData4preloader);
+        }
+        
 
         // set clientArea's default Layout
         RowLayout defaultSlideLayout = new RowLayout(SWT.HORIZONTAL);
@@ -330,6 +361,13 @@ public class HAccordionItem extends AnimatableItem {
      */
     public final void displayLabelIcons(boolean enable) {
         this.rightLabel.displayIconsInLabels = enable;
+    }
+    
+    // protected
+    
+    @Override
+    protected void setContentVisible(boolean isVisible) {
+    	this.scrolledComposite.setVisible(isVisible);
     }
 
     // private

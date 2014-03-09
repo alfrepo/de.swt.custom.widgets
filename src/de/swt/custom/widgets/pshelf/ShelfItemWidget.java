@@ -10,8 +10,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 
-import de.swt.custom.widgets.CommonResourceUtil;
-
 /**
  * This Widget can be added to an {@link ShelfItem}.
  * 

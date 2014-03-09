@@ -78,12 +78,14 @@ public class Animation {
         this.activeItemNew = runActiveItemNew;
         this.activeItemOld = runActiveItemOld;
         
-        // callback to make the new item visible again
-        activeItemNew.setVisible(false);
+        // content shouldn't be repainted to spare resources 
+        activeItemNew.setContentVisible(false);
+        
+        // create a callback to draw the content after the animation
         addCallbackRoutine(new ICallbackRoutine() {
 			@Override
 			public void callback() {
-				activeItemNew.setVisible(true);
+				activeItemNew.setContentVisible(true);
 			}
 		});
         

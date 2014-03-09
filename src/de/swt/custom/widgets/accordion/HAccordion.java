@@ -47,14 +47,17 @@ import de.swt.custom.widgets.Colors;
 public class HAccordion extends Composite {
 
     private static final Logger LOG = LoggerFactory.getLogger(HAccordion.class);
+    
 
     public static final int DEFAULT_WIDTH = 100;
     public static final int DEFAULT_HEIGHT = 200;
 
     public static final int MAX_ITEMS_ON_LEFT = 2; // collapse items to stack, when there are more
                                                    // on the left side.
+    
     protected boolean displayIconsInLabels = false;
-
+    protected String preloaderGifPath = "resources/preloader.gif";
+    
     private HAccordionItem activeItem; // pointer to the active item in the Accordion
     private HAccordionItem activeItemOld; // used to revert running animation
 
@@ -376,6 +379,14 @@ public class HAccordion extends Composite {
             item.displayLabelIcons(enable);
         }
         this.displayIconsInLabels = enable;
+    }
+    
+    /**
+     * Sets the Path to the preloader icon, which should be used during the slide animation.
+     * @param relativePath - pass a relative path or null 
+     */
+    public void setPreloaderGIfPath(String relativePath){
+    	this.preloaderGifPath = relativePath;
     }
 
     /**

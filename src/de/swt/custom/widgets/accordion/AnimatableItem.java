@@ -175,4 +175,15 @@ public class AnimatableItem extends Canvas {
         }
         return false; // both found, but wrong disposition
     }
+    
+    /**
+     * 
+     * Hides the content of the {@link AnimatableItem} during the animation is running.
+     * This is the place to display a preloader!
+     * 
+     * @param hide - a flag shows whether to hide or to show the content
+     */
+    protected void setContentVisible(boolean isVisible){
+    	// nothing on default 
+    }
 }

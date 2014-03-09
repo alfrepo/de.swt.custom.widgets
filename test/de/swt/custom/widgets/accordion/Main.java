@@ -14,7 +14,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.osgi.framework.AdminPermission;
+
+import de.swt.custom.widgets.accordion.HAccordion;
+import de.swt.custom.widgets.accordion.HAccordionItem;
+import de.swt.custom.widgets.accordion.Style;
 
 
 public class Main {

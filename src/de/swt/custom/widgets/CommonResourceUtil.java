@@ -1,11 +1,7 @@
 package de.swt.custom.widgets;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utilities to access to resources (e.g. files).
@@ -14,9 +10,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class CommonResourceUtil {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CommonResourceUtil.class);
-
 
     private CommonResourceUtil() {
     }
