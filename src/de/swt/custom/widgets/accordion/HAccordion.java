@@ -641,5 +641,12 @@ public class HAccordion extends Composite {
         }
 
     }
+    
+    // XXX test
+    void defferItemsLayout(boolean defer){
+    	for(HAccordionItem item : getItemsIterator().getChildren() ){
+    		item.getClientAreaObject().setLayoutDeferred(defer);
+    	}
+    }
 
 }

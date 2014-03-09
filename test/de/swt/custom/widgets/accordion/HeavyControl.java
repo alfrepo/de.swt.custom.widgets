@@ -76,4 +76,14 @@ public class HeavyControl extends Composite {
 	static int getRandomRGBValue() {
 		return (int) Math.round(Math.random() * 255);
 	}
+	
+	// test
+	@Override
+	public void redraw() {
+		super.redraw();
+	}
+
+	public void redraw(int x, int y, int width, int height, boolean all) {
+		super.redraw(x, y, width, height, all);
+	};
 }

@@ -30,4 +30,24 @@ public class HAccordionClientArea extends Composite {
         }
         return this;
     }
+    
+    
+    
+    // XXX test - try hiding children during animation
+    
+    boolean childrenHidden = false;
+    public void hideChildren(boolean hide){
+    	this.setVisible(hide);
+    	this.childrenHidden = hide;
+    }
+    
+    private Control[] noChildrenArray = new Control[0];
+    @Override
+    public Control[] getChildren() {
+    	if(childrenHidden){
+    		return noChildrenArray;
+    	}else{ 
+    		return super.getChildren();	
+    	}
+    }
 }

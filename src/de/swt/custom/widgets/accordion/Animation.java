@@ -77,7 +77,17 @@ public class Animation {
 
         this.activeItemNew = runActiveItemNew;
         this.activeItemOld = runActiveItemOld;
-
+        
+        // callback to make the new item visible again
+        activeItemNew.setVisible(false);
+        addCallbackRoutine(new ICallbackRoutine() {
+			@Override
+			public void callback() {
+				activeItemNew.setVisible(true);
+			}
+		});
+        
+        // start the animation now
         if (runActiveItemOld.rightFrom(runActiveItemNew)) {
             startAnimationToTheRight();
         } else if (runActiveItemOld.leftFrom(runActiveItemNew)) {
@@ -471,10 +481,33 @@ public class Animation {
 
         @Override
         public void run() {
+        	if(workers.isEmpty()){
+        		return;
+        	}
+        	
+        	// run on UI thread
+        	Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+		        	// test: disable laying out of accordion items during the animation
+		        	accordion.defferItemsLayout(true);
+				}
+			});
+        	
             Iterator<Runnable> iter = workers.iterator();
             while (iter.hasNext()) {
                 iter.next().run();
             }
+            
+          Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					accordion.defferItemsLayout(false);
+		            accordion.layout(true, true);
+		            accordion.redraw();
+		            accordion.update();
+				}
+			});
 
             new AnonymousCallbackExecutor(callbackRoutines).start();
             callbackRoutines.clear();

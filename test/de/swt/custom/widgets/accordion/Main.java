@@ -3,6 +3,7 @@ package de.swt.custom.widgets.accordion;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -11,13 +12,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-
-import de.swt.custom.widgets.accordion.HAccordion;
-import de.swt.custom.widgets.accordion.HAccordionItem;
-import de.swt.custom.widgets.accordion.Style;
+import org.osgi.framework.AdminPermission;
 
 
 public class Main {
@@ -67,11 +64,6 @@ public class Main {
 		//TODO: hide content
 		//add some content to the slides
 		for(HAccordionItem i: haccordion.getItemsIterator().getChildren()){
-//			i.getClientAreaObject().setLayout(new FillLayout());
-//			Label l = new Label(i.getClientAreaObject(), SWT.NONE);
-//			l.setText("Label "+i);
-//			l.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_MAGENTA));
-			
 			createHeavyContent(i.getClientAreaObject());
 		}
 		
@@ -88,9 +80,23 @@ public class Main {
                     //reverting
                     haccordion.revertAnimation();
                 }
-//                else if(event.keyCode == 16777296){ //ENTER                 
-//                    System.out.println("[WARN] ENTER Key: "+event.keyCode);
-//                }
+                
+                if(event.keyCode == 115){ //s Button
+                    System.out.println("[WARN] s Key: "+event.keyCode);
+                    displayScreenshot(haccordion.getActiveItem().getClientAreaObject());
+                }
+                
+                if(event.keyCode == 16777296){ //ENTER rechts               
+                    System.out.println("[WARN] ENTER Key: "+event.keyCode);
+                    haccordion.getActiveItem().getClientAreaObject().setLayoutDeferred(false);
+                    
+                    haccordion.getActiveItem().getClientAreaObject().setVisible(false);
+                    
+                    haccordion.getActiveItem().getClientAreaObject().hideChildren(true);
+                    haccordion.getActiveItem().getClientAreaObject().redraw();
+                    System.out.println("peng");
+                }
+                
 //                else if(event.keyCode == 16777219){ //left                  
 //                    System.out.println("[WARN] ENTER Key: "+event.keyCode);
 //                    animationCommon.collapseItems();
@@ -149,8 +155,9 @@ public class Main {
 	
 	private static void createHeavies(int count, Composite parent, Composite positionAbove){
 		if(count>0){
+			count--;
 			HeavyControl h = create( parent,  positionAbove);
-			createHeavies(--count, parent, h);
+			createHeavies(count, parent, h);
 		}
 	}
 	
@@ -163,6 +170,13 @@ public class Main {
 		fd.bottom = new FormAttachment(positionBelowThis, 100, SWT.TOP);
 		h.setLayoutData(fd);
 		return h;
+	}
+	
+	// Create a Screenshot of the Slide
+	
+	private static void displayScreenshot(Composite comp){
+		Image img = CompositeSnapper.snapShot(comp);
+		CompositeSnapper.popup( img );
 	}
 	
 }
