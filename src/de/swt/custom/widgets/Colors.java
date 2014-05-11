@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Display;
 public final class Colors {
 
 	private Colors() {
-
 	}
 
 	public static final int MAX_BASE_COLOR_VALUE = 256;
