@@ -25,7 +25,6 @@ public abstract class PartOverlay extends Overlay{
 	Composite parentComposite;
 	IPartListener partListener;
 	
-	
 	public PartOverlay(MPart mpart, EPartService epartService){
 		super();
 		
