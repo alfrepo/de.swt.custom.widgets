@@ -28,6 +28,7 @@ public class AutoWrapView {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * Open the window.
