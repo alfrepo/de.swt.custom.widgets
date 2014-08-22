@@ -13,6 +13,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+/**
+ * The Button, which has an arrow up or down arrow on it. <br>
+ * This Button is placed on the horizontal Sash-Belt / Sash-stripe ({@link Sash}). <br>
+ * This Button controlls either the expanding or collapsing of sash areas. <br>
+ * 
+ * @author skip
+ *
+ */
 public class SashToken extends Canvas {
 
 	private int width = 30;

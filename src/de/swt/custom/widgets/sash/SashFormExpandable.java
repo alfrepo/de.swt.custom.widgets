@@ -5,19 +5,21 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 
 public class SashFormExpandable extends Composite {
+	
+	private static final int HEIGHT_SASH = 15;
 
 	private SashForm sashForm;
 	private Composite compositeTop;
 	private Composite compositeBottomContainer;
 	private Composite compositeBottom;
 	
+	// there are two Sashes (belts). One of them is always hidden, depending on expansion state
 	private Sash sashMiddle;
 	private Sash sashBottom;
 	
@@ -38,19 +40,28 @@ public class SashFormExpandable extends Composite {
 	protected void createContents(Composite parent){
 		setLayout(new FormLayout());
 		
+		// create the usual SWT SashForm
 		sashForm = new SashForm(this,  SWT.VERTICAL);
+		
+		// TOP content container 
 		compositeTop = new Composite(sashForm, SWT.NONE);
 		
+		// bottom content container AND middle sash container		
 		compositeBottomContainer = new Composite(sashForm, SWT.NONE);
-		sashMiddle = new Sash(compositeBottomContainer, SWT.NONE);
-		compositeBottom = new Composite(compositeBottomContainer, SWT.NONE);
+
+			// MIDDLE Sash
+			sashMiddle = new Sash(compositeBottomContainer, SWT.NONE);
 		
+			// BOTTOM content container
+			compositeBottom = new Composite(compositeBottomContainer, SWT.NONE);
+		
+		// BOTTOM Sash container
 		sashBottom = new Sash(this, SWT.NONE);
 		
-		//LAYOUT
+		// LAYOUT
 		compositeBottomContainer.setLayout(new FormLayout());
 		
-		// layout sash above sash
+		// layout sashForm to be over the sash (belt) at the bottom
 		FormData fd_sashForm = new FormData();
 		fd_sashForm.right = new FormAttachment(100);
 		fd_sashForm.top = new FormAttachment(0, 0);
@@ -58,24 +69,26 @@ public class SashFormExpandable extends Composite {
 		fd_sashForm.bottom = new FormAttachment(sashBottom, 0);
 		sashForm.setLayoutData(fd_sashForm);
 		
-		//layout sash bottom
+		// layout, in which  the BOTTOM SASH is VISIBLE. Used when TOP container of the sashForm is maximized
 		formDataSashBottomVisible = new FormData();
 		formDataSashBottomVisible.right = new FormAttachment(100);
-		formDataSashBottomVisible.top = new FormAttachment(100,-15);
+		formDataSashBottomVisible.top = new FormAttachment(100,-HEIGHT_SASH);
 		formDataSashBottomVisible.left = new FormAttachment(0, 0);
 		formDataSashBottomVisible.bottom = new FormAttachment(100);
 		sashBottom.setLayoutData(formDataSashBottomVisible);
-		// this layout is used, when the bottom sash is visible
+		
+		// layout, in which  the BOTTOM SASH is HIDDEN. Used when BOTTOM container of the sashForm is maximized
+		// in this case the middle Sash is already visible
 		formDataSashBottomHidden = new FormData();
 		formDataSashBottomHidden.bottom = new FormAttachment(100, 0);
 		formDataSashBottomHidden.top = new FormAttachment(100, 0);
 		
-		//layout sash top
+		// layout sash top
 		FormData fd_sashTop = new FormData();
 		fd_sashTop.right = new FormAttachment(100);
 		fd_sashTop.top = new FormAttachment(0,0);
 		fd_sashTop.left = new FormAttachment(0, 0);
-		fd_sashTop.bottom = new FormAttachment(0,15);
+		fd_sashTop.bottom = new FormAttachment(0,HEIGHT_SASH);
 		sashMiddle.setLayoutData(fd_sashTop);
 		
 		// layout composite bottom
@@ -90,8 +103,8 @@ public class SashFormExpandable extends Composite {
 		addDecor(sashMiddle, sashBottom);
 		addFunctionalityToSashTokens(sashMiddle, sashBottom);
 		
-		//initial state
-		expandBoth();
+		// initial state
+		disableMaximizationOfShellContainers();
 	}
 	
 	private void addDecor(Sash middle, Sash bottom){
@@ -118,7 +131,7 @@ public class SashFormExpandable extends Composite {
 					maximizeTop();
 				}else if(compositeBottomContainer.equals(sashForm.getMaximizedControl())){
 					// if top is maximized - expand both
-					expandBoth();
+					disableMaximizationOfShellContainers();
 				}
 			}
 		});
@@ -140,40 +153,56 @@ public class SashFormExpandable extends Composite {
 			public void mouseUp(MouseEvent e) {
 				if(compositeTop.equals(sashForm.getMaximizedControl())){
 					// if top is expanded - expand both
-					expandBoth();
+					disableMaximizationOfShellContainers();
 				}
 			}
 		});
 	}
 	
 	// Functional helpers
-	public void expandBoth(){
+	public void disableMaximizationOfShellContainers(){
+		// bottom
 		sashBottom.setVisible(false);
 		sashBottom.setLayoutData(formDataSashBottomHidden);
-		
+		// mid		
 		sashMiddle.setVisible(true);
+		
+		// disable fullscreen
 		sashForm.setMaximizedControl(null);
 		
-		sashForm.layout(true); 
+		// layout
+		sashBottom.getParent().layout(true); 
 	}
 	
 	public void maximizeTop(){
+		// bottom
 		sashBottom.setVisible(true);
 		sashBottom.setLayoutData(formDataSashBottomVisible);
-		
+
+		// hide the middle sash
 		sashMiddle.setVisible(false);
+
+		// maximize the top
 		sashForm.setMaximizedControl(compositeTop);
 		
-		sashForm.layout(true);
+		// have to update the layout of the parent, which contains sashForm and bottom Sash (Belt), 
+		// so that it redistributes space among sash and sashForm
+		sashBottom.getParent().layout(true, true);
 	}
 	
 	public void maximizeBottom(){
+		// bottom
 		sashBottom.setVisible(false);
 		sashBottom.setLayoutData(formDataSashBottomHidden);
 		
+		// mid
 		sashMiddle.setVisible(true);
+		
+		// maximize bottom
 		sashForm.setMaximizedControl(compositeBottomContainer);
 
-		sashForm.layout(true);
+		// have to update the layout of the parent, which contains sashForm and bottom Sash (Belt), 
+		// so that it redistributes space among sash and sashForm
+		sashBottom.getParent().layout(true, true);
 	}
 }

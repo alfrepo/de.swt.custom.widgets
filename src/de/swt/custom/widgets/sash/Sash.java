@@ -13,6 +13,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+/**
+ * This class represents the stripe, which one can drag up and down to redistribute the space between upper and lower {@link SashForm} containers.
+ * @author skip
+ *
+ */
 public class Sash extends Composite {
 	private int width = 25;
 	private int height = 15;
@@ -54,10 +59,12 @@ public class Sash extends Composite {
 	private void doLayout(){
 		this.setLayout(new FormLayout());
 		
+		// left token is places left from the middle
 		FormData fd_tokenLeft = new FormData();
 		fd_tokenLeft.right = new FormAttachment(50,0);
 		tokenLeft.setLayoutData(fd_tokenLeft);
-		
+
+		// right token is places right from the middle
 		FormData fd_tokenRight = new FormData();
 		fd_tokenRight.left = new FormAttachment(50,0);
 		tokenRight.setLayoutData(fd_tokenRight);
@@ -73,7 +80,7 @@ public class Sash extends Composite {
 				final Display d = Display.getCurrent();
 				
 				// first switch the sash to expand-both mode
-				sashFormExpandable.expandBoth();
+				sashFormExpandable.disableMaximizationOfShellContainers();
 				
 				// listen to movement and resize on move
 				final Listener mouseMovement = new Listener() {
