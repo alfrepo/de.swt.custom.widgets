@@ -1,6 +1,6 @@
 package de.swt.custom.widgets.menu;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.eclipse.swt.widgets.Composite;
 
 import de.swt.custom.widgets.menu.rendering.Renderer;

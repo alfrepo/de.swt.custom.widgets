@@ -2,7 +2,7 @@ package de.swt.custom.widgets.binders;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
